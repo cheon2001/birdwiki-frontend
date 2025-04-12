@@ -2,40 +2,10 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Birdwiki 문서</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .section-ref {
-      margin-top: 0.5rem;
-      padding: 0.6rem;
-      background-color: #f5f5f5;
-      border-left: 4px solid #888;
-      font-size: 0.9rem;
-      color: #333;
-    }
-    .image-caption {
-      font-size: 0.85rem;
-      color: #666;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .section-inline-images {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      justify-content: flex-start;
-      margin: 1rem 0;
-    }
-    
-    .section-image {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      display: block;
-    }
-  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
 </head>
 <body>
   <header class="top-bar">
@@ -45,21 +15,17 @@
         <strong>Birdwiki</strong> : Birds of South Korea
       </div>
     </a>
-
-    
-    <div class="search-box top-search">
-      <input type="text" id="topSearchInput" placeholder="🔍 검색어를 입력하세요" autocomplete="off" />
-      <ul id="topSuggestions" class="suggestion-list"></ul>
-    </div>
-    
     <nav class="nav-menu">
       <a href="index.html" class="nav-link">Birdwiki</a>
       <a href="#" class="nav-link">토론장</a>
       <a href="#" class="nav-link">게시판</a>
       <a href="write.html" class="nav-link important">문서 만들기</a>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 검색어를 입력하세요" autocomplete="off" />
+        <ul id="suggestions" class="suggestion-list"></ul>
+      </div>
       <img src="assets/icons/User_icon.png" alt="User" class="user-icon" />
     </nav>
-
   </header>
 
   <div class="hero-section flush-to-header">
@@ -82,11 +48,6 @@
       <div id="doc-content">로딩 중...</div>
     </article>
   </main>
-
-  <div id="lightbox" class="image-lightbox-overlay">
-    <img src="" alt="확대 이미지" />
-  </div>
-  
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -118,27 +79,20 @@
           const altMatch = line.match(/!\[(.*?)\]\((.*?)\)/);
           if (altMatch) {
             const [_, alt, src] = altMatch;
-
             if (!imageContainer) {
               imageContainer = document.createElement('div');
               imageContainer.className = 'section-inline-images';
               currentSection.appendChild(imageContainer);
             }
-
             const block = document.createElement('div');
             block.className = 'image-block';
-
             const img = document.createElement('img');
             img.src = src;
             img.alt = alt;
             img.className = 'section-image';
-
-
-
             const caption = document.createElement('p');
             caption.textContent = alt;
             caption.className = 'image-caption';
-
             block.appendChild(img);
             block.appendChild(caption);
             imageContainer.appendChild(block);
@@ -160,7 +114,7 @@
     if (!title) {
       document.getElementById('doc-title').textContent = '❌ 제목이 제공되지 않았습니다.';
     } else {
-         fetch(`https://birdwiki.onrender.com/api/wiki/${title}`)
+      fetch(`https://birdwiki.onrender.com/api/wiki/${encodeURIComponent(title)}`)
         .then(res => res.ok ? res.json() : Promise.reject('문서를 찾을 수 없습니다'))
         .then(data => {
           document.getElementById('korean-name').textContent = data.koreanName || data.title;
@@ -184,77 +138,42 @@
       window.location.href = `write.html?title=${encodeURIComponent(title)}&edit=true`;
     });
 
-    
+    // ✅ 자동완성 기능 중복 방지 및 중복 항목 제거
+    const input = document.getElementById('searchInput');
+    const suggestionList = document.getElementById('suggestions');
 
-document.getElementById("lightbox").addEventListener("click", () => {
-  document.getElementById("lightbox").style.display = "none";
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    document.getElementById("lightbox").style.display = "none";
-  }
-});
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = lightbox.querySelector("img");
-
-  document.body.addEventListener("click", (e) => {
-    if (e.target.classList.contains("section-image")) {
-      lightboxImg.src = e.target.src;
-      lightbox.style.display = "flex";
-    }
-  });
-
-  lightbox.addEventListener("click", () => {
-    lightbox.style.display = "none";
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      lightbox.style.display = "none";
-    }
-  });
-});
-
-const topInput = document.getElementById('topSearchInput');
-  const topSuggestions = document.getElementById('topSuggestions');
-
-  if (topInput) {
-    topInput.addEventListener('input', async () => {
-      const keyword = topInput.value.trim();
-      topSuggestions.innerHTML = '';
-      if (!keyword) return;
+    input.addEventListener('input', async () => {
+      const query = input.value.trim();
+      suggestionList.innerHTML = '';
+      if (!query) return;
 
       try {
-        const res = await fetch(`https://birdwiki.onrender.com/api/suggest?q=${encodeURIComponent(keyword)}`);
-        const results = await res.json();
+        const res = await fetch(`https://birdwiki.onrender.com/api/suggest?q=${encodeURIComponent(query)}`);
+        const suggestions = await res.json();
+        const uniqueTitles = [...new Set(suggestions)];
 
-        results.forEach(title => {
+        uniqueTitles.forEach(title => {
           const li = document.createElement('li');
           li.textContent = title;
           li.className = 'suggestion-item';
-          li.addEventListener('click', () => {
+          li.onclick = () => {
             window.location.href = `read.html?title=${encodeURIComponent(title)}`;
-          });
-          topSuggestions.appendChild(li);
+          };
+          suggestionList.appendChild(li);
         });
       } catch (err) {
-        console.error('🔍 자동완성 실패:', err);
+        console.error('자동완성 오류', err);
       }
     });
 
-    topInput.addEventListener('keypress', (e) => {
+    input.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
-        const keyword = topInput.value.trim();
-        if (keyword) {
-          window.location.href = `read.html?title=${encodeURIComponent(keyword)}`;
+        const query = input.value.trim();
+        if (query) {
+          window.location.href = `read.html?title=${encodeURIComponent(query)}`;
         }
       }
     });
-  }
   </script>
 </body>
 </html>
