@@ -75,6 +75,11 @@
     </article>
   </main>
 
+  <div id="lightbox" class="image-lightbox-overlay">
+    <img src="" alt="확대 이미지" />
+  </div>
+  
+
   <script>
     const params = new URLSearchParams(window.location.search);
     const title = params.get('title');
@@ -119,12 +124,6 @@
             img.src = src;
             img.alt = alt;
             img.className = 'section-image';
-            img.addEventListener("click", () => {
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = lightbox.querySelector("img");
-  lightboxImg.src = img.src;
-  lightbox.style.display = "flex";
-});
 
 
 
@@ -177,12 +176,7 @@
       window.location.href = `write.html?title=${encodeURIComponent(title)}&edit=true`;
     });
 
-    img.addEventListener("click", () => {
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = lightbox.querySelector("img");
-  lightboxImg.src = img.src;
-  lightbox.style.display = "flex";
-});
+    
 
 document.getElementById("lightbox").addEventListener("click", () => {
   document.getElementById("lightbox").style.display = "none";
@@ -194,6 +188,28 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+
+document.addEventListener("DOMContentLoaded", () => {
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = lightbox.querySelector("img");
+
+  document.body.addEventListener("click", (e) => {
+    if (e.target.classList.contains("section-image")) {
+      lightboxImg.src = e.target.src;
+      lightbox.style.display = "flex";
+    }
+  });
+
+  lightbox.addEventListener("click", () => {
+    lightbox.style.display = "none";
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      lightbox.style.display = "none";
+    }
+  });
+});
   </script>
 </body>
 </html>
