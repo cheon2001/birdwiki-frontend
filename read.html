@@ -145,7 +145,7 @@
     if (!title) {
       document.getElementById('doc-title').textContent = '❌ 제목이 제공되지 않았습니다.';
     } else {
-      fetch(`https://birdwiki.onrender.com/api/wiki/${titleParam}`)
+         fetch(`https://birdwiki.onrender.com/api/wiki/${title}`)
         .then(res => res.ok ? res.json() : Promise.reject('문서를 찾을 수 없습니다'))
         .then(data => {
           document.getElementById('korean-name').textContent = data.koreanName || data.title;
