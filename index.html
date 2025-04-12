@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birdwiki : Birds of South Korea</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
+</head>
+<body>
+    <header class="top-bar">
+      <a href="/index.html" class="logo-group">
+        <img src="assets/icons/Birdwiki_icon.png" alt="Birdwiki Logo" class="logo-icon" />
+        <div class="logo">
+          <strong>Birdwiki</strong> : Birds of South Korea
+        </div>
+      </a>
+      
+      
+        <nav class="nav-menu">
+            <a href="#" class="nav-link">Birdwiki</a>
+            <a href="#" class="nav-link">토론장</a>
+            <a href="#" class="nav-link">게시판</a>
+            <a href="write.html" class="nav-link important">문서 만들기</a>
+            <img src="assets/icons/User_icon.png" alt="User" class="user-icon" />
+          </nav>
+          
+      </header>
+
+  <section class="hero">
+    <div class="overlay">
+      <h1>Explore Birds.<br />Protect Nature.</h1>
+      <p class="sub">대한민국의 모든 조류 생태와 분류를 알아보세요.</p>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 검색어를 입력하세요" autocomplete="off" />
+        <ul id="suggestions" class="suggestion-list"></ul>
+      </div>
+      
+    </div>
+  </section>
+
+
+  <script>
+    const input = document.getElementById('searchInput');
+    const suggestions = document.getElementById('suggestions');
+    
+    input.addEventListener('input', async () => {
+      const keyword = input.value.trim();
+      if (!keyword) {
+        suggestions.innerHTML = '';
+        return;
+      }
+    
+      try {
+        const res = await fetch(`https://birdwiki.onrender.com/api/wiki/${titleParam}`);
+        const titles = await res.json();
+    
+        suggestions.innerHTML = '';
+        titles.forEach(title => {
+          const li = document.createElement('li');
+          li.textContent = title;
+          li.className = 'suggestion-item';
+          li.addEventListener('click', () => {
+            window.location.href = `read.html?title=${encodeURIComponent(title)}`;
+          });
+          suggestions.appendChild(li);
+        });
+      } catch (err) {
+        console.error("추천 검색어 실패", err);
+      }
+    });
+    
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const keyword = input.value.trim();
+        if (keyword) {
+          window.location.href = `read.html?title=${encodeURIComponent(keyword)}`;
+        }
+      }
+    });
+    </script>
+      
+</body>
+</html>
