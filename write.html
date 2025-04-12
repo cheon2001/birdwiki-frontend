@@ -47,19 +47,7 @@
   </style>
 </head>
 <body>
-  <header class="top-bar">
-    <a href="index.html" class="logo-group">
-      <img src="assets/icons/Birdwiki_icon.png" alt="Birdwiki Logo" class="logo-icon" />
-      <div class="logo"><strong>Birdwiki</strong> : Birds of South Korea</div>
-    </a>
-    <nav class="nav-menu">
-      <a href="index.html" class="nav-link">Birdwiki</a>
-      <a href="#" class="nav-link">토론장</a>
-      <a href="#" class="nav-link">게시판</a>
-      <a href="write.html" class="nav-link important">문서 만들기</a>
-      <img src="assets/icons/User_icon.png" alt="User" class="user-icon" />
-    </nav>
-  </header>
+  <div id="header-container"></div>
 
   <main class="write-container">
     <h1>✏️ 문서 만들기</h1>
@@ -81,6 +69,54 @@
       <button type="submit">문서 저장</button>
     </form>
   </main>
+
+  <script>
+    fetch('header.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('header-container').innerHTML = html;
+  
+        // 자동완성 기능 추가 (header.html 안에 없기 때문에 따로 붙여줘야 함)
+        const input = document.getElementById('searchInput');
+        const suggestions = document.getElementById('suggestions');
+  
+        if (input) {
+          input.addEventListener('input', async () => {
+            const keyword = input.value.trim();
+            if (!keyword) {
+              suggestions.innerHTML = '';
+              return;
+            }
+  
+            try {
+              const res = await fetch(`https://birdwiki.onrender.com/api/suggest?q=${encodeURIComponent(keyword)}`);
+              const titles = await res.json();
+              suggestions.innerHTML = '';
+              titles.forEach(title => {
+                const li = document.createElement('li');
+                li.textContent = title;
+                li.className = 'suggestion-item';
+                li.addEventListener('click', () => {
+                  window.location.href = `read.html?title=${encodeURIComponent(title)}`;
+                });
+                suggestions.appendChild(li);
+              });
+            } catch (err) {
+              console.error("추천 검색어 실패", err);
+            }
+          });
+  
+          input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              const keyword = input.value.trim();
+              if (keyword) {
+                window.location.href = `read.html?title=${encodeURIComponent(keyword)}`;
+              }
+            }
+          });
+        }
+      });
+  </script>
 
   <script>
     const toBase64 = (file) => new Promise((res, rej) => {
