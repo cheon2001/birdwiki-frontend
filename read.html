@@ -45,6 +45,13 @@
         <strong>Birdwiki</strong> : Birds of South Korea
       </div>
     </a>
+
+    
+    <div class="search-box top-search">
+      <input type="text" id="topSearchInput" placeholder="🔍 검색어를 입력하세요" autocomplete="off" />
+      <ul id="topSuggestions" class="suggestion-list"></ul>
+    </div>
+    
     <nav class="nav-menu">
       <a href="index.html" class="nav-link">Birdwiki</a>
       <a href="#" class="nav-link">토론장</a>
@@ -52,6 +59,7 @@
       <a href="write.html" class="nav-link important">문서 만들기</a>
       <img src="assets/icons/User_icon.png" alt="User" class="user-icon" />
     </nav>
+
   </header>
 
   <div class="hero-section flush-to-header">
@@ -210,6 +218,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+const topInput = document.getElementById('topSearchInput');
+  const topSuggestions = document.getElementById('topSuggestions');
+
+  if (topInput) {
+    topInput.addEventListener('input', async () => {
+      const keyword = topInput.value.trim();
+      topSuggestions.innerHTML = '';
+      if (!keyword) return;
+
+      try {
+        const res = await fetch(`https://birdwiki.onrender.com/api/suggest?q=${encodeURIComponent(keyword)}`);
+        const results = await res.json();
+
+        results.forEach(title => {
+          const li = document.createElement('li');
+          li.textContent = title;
+          li.className = 'suggestion-item';
+          li.addEventListener('click', () => {
+            window.location.href = `read.html?title=${encodeURIComponent(title)}`;
+          });
+          topSuggestions.appendChild(li);
+        });
+      } catch (err) {
+        console.error('🔍 자동완성 실패:', err);
+      }
+    });
+
+    topInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const keyword = topInput.value.trim();
+        if (keyword) {
+          window.location.href = `read.html?title=${encodeURIComponent(keyword)}`;
+        }
+      }
+    });
+  }
   </script>
 </body>
 </html>

@@ -447,3 +447,48 @@ h2 {
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
+
+.top-search {
+  max-width: 300px;
+  position: relative;
+  margin-left: 40px;  /* 로고와 너무 붙지 않게 */
+}
+
+.top-search input {
+  width: 100%;
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.top-search input:focus {
+  border-color: #0077cc;
+  box-shadow: 0 0 0 2px rgba(0, 119, 204, 0.2);
+}
+
+.suggestion-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  z-index: 1001;
+}
+
+.suggestion-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #000;
+}
+
+.suggestion-item:hover {
+  background-color: #f2f2f2;
+}
