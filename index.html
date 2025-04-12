@@ -43,18 +43,18 @@
   <script>
     const input = document.getElementById('searchInput');
     const suggestions = document.getElementById('suggestions');
-    
+  
     input.addEventListener('input', async () => {
       const keyword = input.value.trim();
       if (!keyword) {
         suggestions.innerHTML = '';
         return;
       }
-    
+  
       try {
-        const res = await fetch(`https://birdwiki.onrender.com/api/wiki/${titleParam}`);
+        const res = await fetch(`https://birdwiki.onrender.com/api/suggest?q=${encodeURIComponent(keyword)}`);
         const titles = await res.json();
-    
+  
         suggestions.innerHTML = '';
         titles.forEach(title => {
           const li = document.createElement('li');
@@ -69,7 +69,7 @@
         console.error("추천 검색어 실패", err);
       }
     });
-    
+  
     input.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         const keyword = input.value.trim();
@@ -78,7 +78,8 @@
         }
       }
     });
-    </script>
+  </script>
+  
       
 </body>
 </html>
