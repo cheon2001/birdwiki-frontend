@@ -119,6 +119,14 @@
             img.src = src;
             img.alt = alt;
             img.className = 'section-image';
+            img.addEventListener("click", () => {
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = lightbox.querySelector("img");
+  lightboxImg.src = img.src;
+  lightbox.style.display = "flex";
+});
+
+
 
             const caption = document.createElement('p');
             caption.textContent = alt;
@@ -168,6 +176,24 @@
     document.getElementById("edit-button").addEventListener("click", () => {
       window.location.href = `write.html?title=${encodeURIComponent(title)}&edit=true`;
     });
+
+    img.addEventListener("click", () => {
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = lightbox.querySelector("img");
+  lightboxImg.src = img.src;
+  lightbox.style.display = "flex";
+});
+
+document.getElementById("lightbox").addEventListener("click", () => {
+  document.getElementById("lightbox").style.display = "none";
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.getElementById("lightbox").style.display = "none";
+  }
+});
+
   </script>
 </body>
 </html>
