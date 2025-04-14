@@ -6,441 +6,225 @@
   <title>문서 만들기 - Birdwiki</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
-  <style>
-    .section, .sub-block, .image-block {
-      border: 1px solid #ccc;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      background-color: #fafafa;
-    }
-    .section > .header-row,
-    .sub-block > .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-    .section-title,
-    .subheading {
-      flex: 1;
-      padding: 0.4rem;
-    }
-    .delete-section,
-    .delete-sub,
-    .remove-image {
-      background: none;
-      border: none;
-      color: red;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .inline-caption {
-      width: 100%;
-      margin-top: 0.5rem;
-    }
-    img {
-      display: block;
-      margin-top: 0.5rem;
-      max-width: 100%;
-    }
-  </style>
 </head>
 <body>
-  <div id="header-container"></div>
+  <div class="container">
+    <h1>문서 만들기</h1>
+    <form id="document-form">
+      <input type="text" id="title" placeholder="제목" required />
+      <input type="text" id="koreanName" placeholder="한국어 이름" />
+      <input type="text" id="scientificName" placeholder="학명" />
+      <input type="text" id="englishName" placeholder="영문 이름" />
+      <input type="text" id="order" placeholder="목 (Order)" />
+      <input type="text" id="family" placeholder="과 (Family)" />
+      <input type="text" id="genus" placeholder="속 (Genus)" />
 
-  <main class="write-container">
-    <h1>✏️ 문서 만들기</h1>
-    <form id="documentForm">
-      <input type="text" id="doc-title" placeholder="문서 제목을 입력하세요" required />
-      <div class="species-header">
-        <input type="text" id="korean-name" placeholder="국명" required />
-        <input type="text" id="scientific-name" placeholder="학명" required />
-        <input type="text" id="english-name" placeholder="영명" required />
-        <input type="text" id="order" placeholder="목" required />
-        <input type="text" id="family" placeholder="과" required />
-        <input type="text" id="genus" placeholder="속" required />
-        <label>대표 이미지 업로드</label>
-        <input type="file" accept="image/*" id="cover-image" />
-        <input type="hidden" id="cover-base64" />
-      </div>
+      <label for="cover">대표 이미지</label>
+      <input type="file" id="cover" accept="image/*" />
+      <input type="hidden" id="cover-url" />
+      <button type="button" id="delete-cover">대표 이미지 삭제</button>
+
       <div id="sections"></div>
-      <button type="button" id="add-section">+ 목차 추가</button>
-      <button type="submit">문서 저장</button>
+      <button type="button" id="add-section">소제목 추가</button>
+      <button type="submit">저장</button>
     </form>
-  </main>
+  </div>
 
   <script>
-    fetch('header.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('header-container').innerHTML = html;
-  
-        // 자동완성 기능 추가 (header.html 안에 없기 때문에 따로 붙여줘야 함)
-        const input = document.getElementById('searchInput');
-        const suggestions = document.getElementById('suggestions');
-  
-        if (input) {
-          input.addEventListener('input', async () => {
-            const keyword = input.value.trim();
-            if (!keyword) {
-              suggestions.innerHTML = '';
-              return;
-            }
-  
-            try {
-              const res = await fetch(`https://birdwiki.onrender.com/api/suggest?q=${encodeURIComponent(keyword)}`);
-              const titles = await res.json();
-              suggestions.innerHTML = '';
-              titles.forEach(title => {
-                const li = document.createElement('li');
-                li.textContent = title;
-                li.className = 'suggestion-item';
-                li.addEventListener('click', () => {
-                  window.location.href = `read.html?title=${encodeURIComponent(title)}`;
-                });
-                suggestions.appendChild(li);
-              });
-            } catch (err) {
-              console.error("추천 검색어 실패", err);
-            }
-          });
-  
-          input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-              const keyword = input.value.trim();
-              if (keyword) {
-                window.location.href = `read.html?title=${encodeURIComponent(keyword)}`;
-              }
-            }
-          });
-        }
+    const isEdit = new URLSearchParams(location.search).get('edit') === 'true';
+    const existingData = JSON.parse(localStorage.getItem('editData') || '{}');
+
+    async function uploadImage(file) {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch('https://birdwiki.onrender.com/api/upload', {
+        method: 'POST',
+        body: formData
       });
-  </script>
-
-  <script>
-    const toBase64 = (file) => new Promise((res, rej) => {
-      const reader = new FileReader();
-      reader.onload = () => res(reader.result);
-      reader.onerror = rej;
-      reader.readAsDataURL(file);
-    });
-
-    const params = new URLSearchParams(window.location.search);
-    const isEdit = params.get('edit') === 'true';
-    const titleParam = params.get('title');
-    const sectionsEl = document.getElementById('sections');
-
-    const createImageBlock = (src = '', caption = '') => {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'image-block';
-  wrapper.innerHTML = `
-    <input type="file" accept="image/*" class="inline-image" />
-    <input type="text" class="inline-caption" placeholder="사진 설명 (선택)" value="${caption}" />
-    <button type="button" class="remove-image">❌</button>
-  `;
-
-  const fileInput = wrapper.querySelector('.inline-image');
-  if (src) {
-    const img = document.createElement('img');
-img.src = src;
-img.className = 'section-image'; // ✅ 클래스 추가
-
-    wrapper.insertBefore(img, fileInput);
-    fileInput.setAttribute('data-base64', src);
-  }
-
-  fileInput.addEventListener('change', async () => {
-    const file = fileInput.files[0];
-    if (file) {
-      const base64 = await toBase64(file);
-      fileInput.setAttribute('data-base64', base64);
-      const preview = wrapper.querySelector('img');
-      if (preview) preview.src = base64;
-      else {
-        const img = document.createElement('img');
-        img.src = base64;
-        wrapper.insertBefore(img, fileInput);
-      }
-    }
-  });
-
-  wrapper.querySelector('.remove-image').onclick = () => wrapper.remove();
-  return wrapper;
-};
-
-
-    const createSubBlock = (data = {}) => {
-  const { title = '', text = '', images = [] } = data;
-  const block = document.createElement('div');
-  block.className = 'sub-block';
-  block.innerHTML = `
-    <div class="header-row">
-      <input type="text" class="subheading" placeholder="소목차 제목" value="${title}" />
-      <button type="button" class="delete-sub">🗑️</button>
-    </div>
-    <textarea class="sub-content" placeholder="내용">${text}</textarea>
-    <div class="sub-images"></div>
-    <input type="file" multiple accept="image/*" class="image-upload" />
-  `;
-
-  const imgContainer = block.querySelector('.sub-images');
-  block.querySelector('.delete-sub').onclick = () => block.remove();
-
-  // ✅ 기존 이미지들 불러오기
-  images.forEach(({ caption, src }) => imgContainer.appendChild(createImageBlock(src, caption)));
-
-  // ✅ 🔥 이미지 업로드 → base64 → 삽입
-  const fileInput = block.querySelector('.image-upload');
-  fileInput.addEventListener('change', async () => {
-    const files = Array.from(fileInput.files);
-    for (const file of files) {
-      const base64 = await toBase64(file);
-      const imageBlock = createImageBlock(base64);
-      imgContainer.appendChild(imageBlock);
-    }
-    fileInput.value = '';
-  });
-
-  return block;
-};
-
-
-const createSection = (
-  heading = '',
-  subBlocks = [],
-  introText = '',
-  introImages = [],
-  references = ''
-) => {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'section';
-  wrapper.innerHTML = `
-    <div class="header-row">
-      <input type="text" class="section-title" value="${heading}" placeholder="목차 제목" required />
-      <button type="button" class="delete-section">🗑️</button>
-    </div>
-    <textarea class="section-intro" placeholder="(선택) 목차 설명">${introText}</textarea>
-    <textarea class="section-references" placeholder="📚 참고문헌 (선택)">${references}</textarea>
-    <div class="section-inline-images"></div>
-    <button type="button" class="add-inline-image">+ 사진 추가</button>
-    <div class="sub-blocks"></div>
-    <button type="button" class="add-sub">+ 소목차 추가</button>
-  `;
-  const subBlockEl = wrapper.querySelector('.sub-blocks');
-  wrapper.querySelector('.add-sub').onclick = () => subBlockEl.appendChild(createSubBlock());
-  wrapper.querySelector('.delete-section').onclick = () => wrapper.remove();
-  const imgWrap = wrapper.querySelector('.section-inline-images');
-  introImages.forEach(({ caption, src }) => imgWrap.appendChild(createImageBlock(src, caption)));
-  subBlocks.forEach(sb => subBlockEl.appendChild(createSubBlock(sb)));
-  return wrapper;
-};
-
-
-
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('add-inline-image')) {
-        const container = e.target.previousElementSibling;
-        container.appendChild(createImageBlock());
-      }
-    });
-
-    document.getElementById('add-section').onclick = () => sectionsEl.appendChild(createSection());
-
-    async function loadDocumentIfEditing() {
-      if (!isEdit || !titleParam) return;
-      try {
-        const res = await fetch(`https://birdwiki.onrender.com/api/wiki/${titleParam}`);
-
-        if (!res.ok) throw new Error('문서를 찾을 수 없습니다');
-        const data = await res.json();
-
-        document.getElementById('doc-title').value = data.title || '';
-        document.getElementById('korean-name').value = data.koreanName || '';
-        document.getElementById('scientific-name').value = data.scientificName || '';
-        document.getElementById('english-name').value = data.englishName || '';
-        document.getElementById('order').value = data.order || '';
-        document.getElementById('family').value = data.family || '';
-        document.getElementById('genus').value = data.genus || '';
-
-        if (data.coverImage) {
-          const img = document.createElement('img');
-          img.src = data.coverImage;
-          img.style.maxWidth = '200px';
-          const cover = document.getElementById('cover-image');
-          cover.setAttribute('data-base64', data.coverImage);
-          cover.insertAdjacentElement('beforebegin', img);
-          document.getElementById('cover-base64').value = data.coverImage;
-        }
-
-        if (data.content) parseAndInjectContent(data.content);
-      } catch (err) {
-        alert("❌ 문서 불러오기 실패: " + err.message);
-      }
-    }
-    function parseAndInjectContent(content) {
-  const lines = content.split('\n');
-  let currentSectionTitle = null;
-  let currentSub = null;
-  let bufferIntro = '';
-  let bufferReferences = '';
-  let bufferImages = [];
-  let bufferSubBlocks = [];
-  let currentSubText = '';
-  let currentSubImages = [];
-
-  function flushSubBlock() {
-    if (!currentSub) return;
-    bufferSubBlocks.push({
-      title: currentSub,
-      text: currentSubText,
-      images: currentSubImages
-    });
-    currentSub = null;
-    currentSubText = '';
-    currentSubImages = [];
-  }
-
-  function flushSection() {
-    if (!currentSectionTitle) return;
-    flushSubBlock(); // 마지막 소목차도 정리
-    const section = createSection(
-      currentSectionTitle,
-      bufferSubBlocks,
-      bufferIntro,
-      bufferImages,
-      bufferReferences
-    );
-    sectionsEl.appendChild(section);
-    currentSectionTitle = null;
-    bufferIntro = '';
-    bufferReferences = '';
-    bufferImages = [];
-    bufferSubBlocks = [];
-    currentSub = null;
-  }
-
-  lines.forEach(line => {
-    if (line.startsWith('## ')) {
-      flushSection();
-      currentSectionTitle = line.slice(3).trim();
-    } else if (line.startsWith('📚 참고문헌:')) {
-      bufferReferences = line.replace('📚 참고문헌:', '').trim();
-    } else if (line.startsWith('### ')) {
-      flushSubBlock();
-      currentSub = line.slice(4).trim();
-    } else if (line.startsWith('![')) {
-      const match = line.match(/!\[(.*?)\]\((.*?)\)/);
-      if (match) {
-        const [_, caption, src] = match;
-        if (currentSub) {
-          currentSubImages.push({ caption, src });
-        } else {
-          bufferImages.push({ caption, src });
-        }
-      }
-    } else if (line.trim()) {
-      if (currentSub) {
-        currentSubText += (currentSubText ? '\n' : '') + line;
-      } else {
-        bufferIntro += (bufferIntro ? '\n' : '') + line;
-      }
-    }
-  });
-
-  flushSection(); // 마지막 섹션까지
-}
-
-
-
-
-    function generateMarkdownContent() {
-      const sections = document.querySelectorAll('.section');
-      let markdown = '';
-
-      sections.forEach(section => {
-        const title = section.querySelector('.section-title').value.trim();
-        const intro = section.querySelector('.section-intro').value.trim();
-        markdown += `## ${title}\n`;
-        if (intro) markdown += `${intro}\n`;
-        const references = section.querySelector('.section-references').value.trim();
-if (references) markdown += `📚 참고문헌: ${references}\n`;
-
-
-        const images = section.querySelectorAll('.section-inline-images .inline-image');
-        images.forEach(imgInput => {
-          const base64 = imgInput.getAttribute('data-base64');
-          const caption = imgInput.nextElementSibling.value.trim();
-          if (base64) markdown += `![${caption}](${base64})\n`;
-        });
-
-        const subs = section.querySelectorAll('.sub-block');
-        subs.forEach(sub => {
-          const subTitle = sub.querySelector('.subheading').value.trim();
-          const subText = sub.querySelector('.sub-content').value.trim();
-          markdown += `### ${subTitle}\n`;
-          if (subText) markdown += `${subText}\n`;
-
-          const subImages = sub.querySelectorAll('.sub-images .inline-image');
-          subImages.forEach(imgInput => {
-            const base64 = imgInput.getAttribute('data-base64');
-            const caption = imgInput.nextElementSibling.value.trim();
-            if (base64) markdown += `![${caption}](${base64})\n`;
-          });
-        });
-      });
-
-      return markdown.trim();
+      const data = await res.json();
+      return data.imageUrl;
     }
 
-    document.getElementById('documentForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const title = document.getElementById('doc-title').value.trim();
-      const koreanName = document.getElementById('korean-name').value.trim();
-      const scientificName = document.getElementById('scientific-name').value.trim();
-      const englishName = document.getElementById('english-name').value.trim();
-      const order = document.getElementById('order').value.trim();
-      const family = document.getElementById('family').value.trim();
-      const genus = document.getElementById('genus').value.trim();
-      const coverImage = document.getElementById('cover-base64').value || null;
-      const content = generateMarkdownContent();
+    function createSection(data = {}) {
+      const container = document.createElement('div');
+      container.className = 'section';
 
-      const payload = {
-        title,
-        content,
-        koreanName,
-        scientificName,
-        englishName,
-        order,
-        family,
-        genus,
-        coverImage
+      const heading = document.createElement('input');
+      heading.placeholder = '소제목';
+      heading.className = 'section-heading';
+      heading.value = data.heading || '';
+
+      const text = document.createElement('textarea');
+      text.placeholder = '내용';
+      text.className = 'section-text';
+      text.value = data.text || '';
+
+      const imageInput = document.createElement('input');
+      imageInput.type = 'file';
+      imageInput.accept = 'image/*';
+
+      const imageUrl = document.createElement('input');
+      imageUrl.type = 'hidden';
+      imageUrl.className = 'section-image';
+      imageUrl.value = data.image || '';
+
+      const imagePreview = document.createElement('img');
+      imagePreview.style.maxWidth = '200px';
+      imagePreview.style.display = data.image ? 'block' : 'none';
+      if (data.image) imagePreview.src = data.image;
+
+      const caption = document.createElement('input');
+      caption.placeholder = '이미지 캡션';
+      caption.className = 'section-caption';
+      caption.value = data.caption || '';
+
+      const references = document.createElement('textarea');
+      references.placeholder = '참고문헌 (줄바꿈으로 구분)';
+      references.className = 'section-refs';
+      references.value = (data.references || []).join('\n');
+
+      const deleteImageBtn = document.createElement('button');
+      deleteImageBtn.textContent = '이미지 삭제';
+      deleteImageBtn.type = 'button';
+      deleteImageBtn.onclick = () => {
+        imageInput.value = '';
+        imagePreview.src = '';
+        imagePreview.style.display = 'none';
+        imageUrl.value = '';
       };
 
-      const url = isEdit 
-  ? 'https://birdwiki.onrender.com/api/update' 
-  : 'https://birdwiki.onrender.com/api/create';
-      try {
-        const res = await fetch(`https://birdwiki.onrender.com${url}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+      const deleteSectionBtn = document.createElement('button');
+      deleteSectionBtn.textContent = '소제목 삭제';
+      deleteSectionBtn.type = 'button';
+      deleteSectionBtn.onclick = () => container.remove();
 
-        const result = await res.json();
-        if (res.ok) {
-          alert("✅ 저장 성공!");
-          window.location.href = `read.html?title=${encodeURIComponent(title)}`;
-        } else {
-          alert(`❌ 저장 실패: ${result.error}`);
-        }
+      imageInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const uploaded = await uploadImage(file);
+        imageUrl.value = uploaded;
+        imagePreview.src = uploaded;
+        imagePreview.style.display = 'block';
+      });
+
+      container.append(heading, text, imageInput, imagePreview, imageUrl, caption, references, deleteImageBtn, deleteSectionBtn);
+      document.getElementById('sections').appendChild(container);
+    }
+
+    document.getElementById('add-section').addEventListener('click', () => createSection());
+
+    if (isEdit && existingData) {
+      document.getElementById('title').value = existingData.title || '';
+      document.getElementById('koreanName').value = existingData.koreanName || '';
+      document.getElementById('scientificName').value = existingData.scientificName || '';
+      document.getElementById('englishName').value = existingData.englishName || '';
+      document.getElementById('order').value = existingData.order || '';
+      document.getElementById('family').value = existingData.family || '';
+      document.getElementById('genus').value = existingData.genus || '';
+      document.getElementById('cover-url').value = existingData.coverImage || '';
+      (existingData.content || []).forEach(createSection);
+    }
+
+    document.getElementById('cover').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const uploaded = await uploadImage(file);
+      document.getElementById('cover-url').value = uploaded;
+    });
+
+    document.getElementById('delete-cover').addEventListener('click', () => {
+      document.getElementById('cover').value = '';
+      document.getElementById('cover-url').value = '';
+    });
+
+    document.getElementById('document-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        title: document.getElementById('title').value.trim(),
+        koreanName: document.getElementById('koreanName').value,
+        scientificName: document.getElementById('scientificName').value,
+        englishName: document.getElementById('englishName').value,
+        order: document.getElementById('order').value,
+        family: document.getElementById('family').value,
+        genus: document.getElementById('genus').value,
+        coverImage: document.getElementById('cover-url').value || null,
+        content: Array.from(document.querySelectorAll('.section')).map(section => ({
+          heading: section.querySelector('.section-heading').value,
+          text: section.querySelector('.section-text').value,
+          image: section.querySelector('.section-image').value,
+          caption: section.querySelector('.section-caption').value,
+          references: section.querySelector('.section-refs').value
+            .split('\n')
+            .map(r => r.trim())
+            .filter(Boolean)
+        }))
+      };
+
+
+
+
+      try {
+        const url = isEdit ? '/api/update' : '/api/create';
+
+        console.log('🧪 최종 fetch URL:', url); // url만 출력해도 충분해
+        
+        const res = await fetch(`https://birdwiki.onrender.com${url}`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload)
+});
+        if (!res.ok) throw new Error('서버 오류 발생');
+
+        alert('✅ 문서가 성공적으로 저장되었습니다.');
+        location.href = 'read.html?title=' + encodeURIComponent(payload.title);
       } catch (err) {
-        alert("❌ 서버 오류 발생");
         console.error(err);
+        alert('❌ 서버 오류 발생');
+      }
+    });
+  </script>
+
+<script>
+  const headerInput = document.getElementById('headerSearchInput');
+  const headerSuggestions = document.getElementById('headerSuggestions');
+
+  if (headerInput) {
+    headerInput.addEventListener('input', async () => {
+      const keyword = headerInput.value.trim();
+      if (!keyword) {
+        headerSuggestions.innerHTML = '';
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://birdwiki.onrender.com/api/suggest?q=${encodeURIComponent(keyword)}`);
+        const titles = await res.json();
+        headerSuggestions.innerHTML = '';
+        titles.forEach(title => {
+          const li = document.createElement('li');
+          li.textContent = title;
+          li.className = 'suggestion-item';
+          li.addEventListener('click', () => {
+            window.location.href = `read.html?title=${encodeURIComponent(title)}`;
+          });
+          headerSuggestions.appendChild(li);
+        });
+      } catch (err) {
+        console.error("추천 검색어 실패", err);
       }
     });
 
-    loadDocumentIfEditing();
-  </script>
+    headerInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const keyword = headerInput.value.trim();
+        if (keyword) {
+          window.location.href = `read.html?title=${encodeURIComponent(keyword)}`;
+        }
+      }
+    });
+  }
+</script>
+
 </body>
 </html>
