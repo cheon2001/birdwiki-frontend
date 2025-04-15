@@ -350,7 +350,7 @@ const createSection = (
     } else if (line.startsWith('📚 참고문헌:')) {
   bufferReferences = line.replace('📚 참고문헌:', '').trim();
   parsingReferences = true;
-} else if (parsingReferences && !line.startsWith('## ') && !line.startsWith('### ')) {
+} else if (parsingReferences && !line.startsWith('## ') && !line.startsWith('### ') && !line.startsWith('![')) {
   bufferReferences += '\n' + line;
 } else if (line.startsWith('### ')) {
       flushSubBlock();
