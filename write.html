@@ -105,7 +105,21 @@
               console.error("추천 검색어 실패", err);
             }
           });
-  
+
+          async function uploadImageToServer(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await fetch("https://birdwiki.onrender.com/api/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error("이미지 업로드 실패");
+
+  const data = await res.json();
+  return data.imageUrl;
+}
           input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
               const keyword = input.value.trim();
@@ -131,7 +145,7 @@
     const titleParam = params.get('title');
     const sectionsEl = document.getElementById('sections');
 
-    const createImageBlock = (src = '', caption = '') => {
+const createImageBlock = (src = '', caption = '') => {
   const wrapper = document.createElement('div');
   wrapper.className = 'image-block';
   wrapper.innerHTML = `
@@ -143,24 +157,29 @@
   const fileInput = wrapper.querySelector('.inline-image');
   if (src) {
     const img = document.createElement('img');
-img.src = src;
-img.className = 'section-image'; // ✅ 클래스 추가
-
+    img.src = src;
+    img.className = 'section-image';
     wrapper.insertBefore(img, fileInput);
-    fileInput.setAttribute('data-base64', src);
+    fileInput.setAttribute('data-url', src);
   }
 
   fileInput.addEventListener('change', async () => {
     const file = fileInput.files[0];
     if (file) {
-      const base64 = await toBase64(file);
-      fileInput.setAttribute('data-base64', base64);
-      const preview = wrapper.querySelector('img');
-      if (preview) preview.src = base64;
-      else {
-        const img = document.createElement('img');
-        img.src = base64;
-        wrapper.insertBefore(img, fileInput);
+      try {
+        const url = await uploadImageToServer(file);
+        fileInput.setAttribute('data-url', url);
+
+        let img = wrapper.querySelector('img');
+        if (img) img.src = url;
+        else {
+          img = document.createElement('img');
+          img.src = url;
+          wrapper.insertBefore(img, fileInput);
+        }
+      } catch (err) {
+        alert("❌ 이미지 업로드 실패");
+        console.error(err);
       }
     }
   });
@@ -168,6 +187,7 @@ img.className = 'section-image'; // ✅ 클래스 추가
   wrapper.querySelector('.remove-image').onclick = () => wrapper.remove();
   return wrapper;
 };
+
 
 
     const createSubBlock = (data = {}) => {
@@ -369,7 +389,7 @@ if (references) markdown += `📚 참고문헌: ${references}\n`;
 
         const images = section.querySelectorAll('.section-inline-images .inline-image');
         images.forEach(imgInput => {
-          const base64 = imgInput.getAttribute('data-base64');
+const base64 = imgInput.getAttribute('data-url');
           const caption = imgInput.nextElementSibling.value.trim();
           if (base64) markdown += `![${caption}](${base64})\n`;
         });
@@ -383,7 +403,7 @@ if (references) markdown += `📚 참고문헌: ${references}\n`;
 
           const subImages = sub.querySelectorAll('.sub-images .inline-image');
           subImages.forEach(imgInput => {
-            const base64 = imgInput.getAttribute('data-base64');
+            const base64 = imgInput.getAttribute('data-url');
             const caption = imgInput.nextElementSibling.value.trim();
             if (base64) markdown += `![${caption}](${base64})\n`;
           });
