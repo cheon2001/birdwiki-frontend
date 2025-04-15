@@ -37,13 +37,12 @@ fetch('header.html')
   .then(html => {
     document.getElementById('header-container').innerHTML = html;
 
-    // ✅ DOM 삽입 후 searchInput, suggestions 바인딩
+    // ✅ header.html 내부 요소 바인딩
     const input = document.getElementById('searchInput');
     const suggestions = document.getElementById('suggestions');
-    const editBtn = document.getElementById('edit-button');  // ✅ 여기에 edit 버튼도 포함
 
-    if (!input || !suggestions || !editBtn) {
-      console.warn("❗ 필요한 요소 중 일부가 존재하지 않습니다.");
+    if (!input || !suggestions) {
+      console.warn("❗ searchInput 또는 suggestions 요소가 없습니다.");
       return;
     }
 
@@ -80,12 +79,19 @@ fetch('header.html')
         }
       }
     });
+  });
 
-    // ✅ edit 버튼도 DOM 삽입 후 바인딩해야 함
+
+    document.addEventListener("DOMContentLoaded", () => {
+  const editBtn = document.getElementById("edit-button");
+  if (editBtn) {
+    const params = new URLSearchParams(window.location.search);
+    const title = params.get("title");
     editBtn.addEventListener("click", () => {
       window.location.href = `write.html?title=${encodeURIComponent(title)}&edit=true`;
     });
-  });
+  }
+});
 
   </script>
   
