@@ -164,19 +164,33 @@ async function uploadImageToServer(file) {
 const createImageBlock = (src = '', caption = '') => {
   const wrapper = document.createElement('div');
   wrapper.className = 'image-block';
-  wrapper.innerHTML = `
-    <input type="file" accept="image/*" class="inline-image" />
-    <input type="text" class="inline-caption" placeholder="사진 설명 (선택)" value="${caption}" />
-    <button type="button" class="remove-image">❌</button>
-  `;
 
-  const fileInput = wrapper.querySelector('.inline-image');
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.className = 'inline-image';
+
+  const captionInput = document.createElement('input');
+  captionInput.type = 'text';
+  captionInput.className = 'inline-caption';
+  captionInput.placeholder = '사진 설명 (선택)';
+  captionInput.value = caption;
+
+  const removeBtn = document.createElement('button');
+  removeBtn.type = 'button';
+  removeBtn.textContent = '❌';
+  removeBtn.className = 'remove-image';
+  removeBtn.onclick = () => wrapper.remove();
+
+  wrapper.appendChild(fileInput);
+  wrapper.appendChild(captionInput);
+  wrapper.appendChild(removeBtn);
+
   if (src) {
     const img = document.createElement('img');
     img.src = src;
-    img.className = 'section-image';
     wrapper.insertBefore(img, fileInput);
-    fileInput.setAttribute('data-url', src);
+    fileInput.setAttribute('data-url', src); // ✅ 필수
   }
 
   fileInput.addEventListener('change', async () => {
@@ -187,12 +201,11 @@ const createImageBlock = (src = '', caption = '') => {
         fileInput.setAttribute('data-url', url);
 
         let img = wrapper.querySelector('img');
-        if (img) img.src = url;
-        else {
+        if (!img) {
           img = document.createElement('img');
-          img.src = url;
           wrapper.insertBefore(img, fileInput);
         }
+        img.src = url;
       } catch (err) {
         alert("❌ 이미지 업로드 실패");
         console.error(err);
@@ -200,9 +213,9 @@ const createImageBlock = (src = '', caption = '') => {
     }
   });
 
-  wrapper.querySelector('.remove-image').onclick = () => wrapper.remove();
   return wrapper;
 };
+
 
 
 
@@ -232,7 +245,7 @@ fileInput.addEventListener('change', async () => {
   for (const file of files) {
     try {
       const url = await uploadImageToServer(file);  // ✅ 서버 업로드
-      const imageBlock = createImageBlock(url);     // ✅ URL 기반으로 추가
+const imageBlock = createImageBlock(url, '');
       imgContainer.appendChild(imageBlock);
     } catch (err) {
       alert("❌ 이미지 업로드 실패");
@@ -442,6 +455,10 @@ subImages.forEach(block => {
         });
       });
 
+console.log("[DEBUG] Markdown content generated:");
+console.log(generateMarkdownContent());
+
+      
       return markdown.trim();
     }
 
