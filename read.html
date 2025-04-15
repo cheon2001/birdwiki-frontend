@@ -31,7 +31,6 @@
       <div id="doc-content">로딩 중...</div>
     </article>
   </main>
-
   <script>
 fetch('header.html')
   .then(res => res.text())
@@ -246,5 +245,32 @@ function renderContent(text) {
 
 
   </script>
+  <div id="image-lightbox" class="image-lightbox-overlay">
+  <img id="lightbox-img" src="" alt="확대 이미지" />
+</div>
+  <script>
+  // 이미지 클릭 시 확대
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("section-image")) {
+      const overlay = document.getElementById("image-lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
+      lightboxImg.src = e.target.src;
+      overlay.style.display = "flex";
+    }
+  });
+
+  // ESC 또는 배경 클릭 시 닫기
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      document.getElementById("image-lightbox").style.display = "none";
+    }
+  });
+  document.getElementById("image-lightbox").addEventListener("click", (e) => {
+    if (e.target.id === "image-lightbox") {
+      e.currentTarget.style.display = "none";
+    }
+  });
+</script>
+
 </body>
 </html>
