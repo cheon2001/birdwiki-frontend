@@ -299,7 +299,9 @@ const createSection = (
       }
     }
     function parseAndInjectContent(content) {
+      
   const lines = content.split('\n');
+      let parsingReferences = false;
   let currentSectionTitle = null;
   let currentSub = null;
   let bufferIntro = '';
@@ -343,11 +345,16 @@ const createSection = (
   lines.forEach(line => {
     if (line.startsWith('## ')) {
       flushSection();
+        parsingReferences = false;  // 🔥 참고문헌 파싱 종료
       currentSectionTitle = line.slice(3).trim();
     } else if (line.startsWith('📚 참고문헌:')) {
-      bufferReferences = line.replace('📚 참고문헌:', '').trim();
-    } else if (line.startsWith('### ')) {
+  bufferReferences = line.replace('📚 참고문헌:', '').trim();
+  parsingReferences = true;
+} else if (parsingReferences && !line.startsWith('## ') && !line.startsWith('### ')) {
+  bufferReferences += '\n' + line;
+} else if (line.startsWith('### ')) {
       flushSubBlock();
+        parsingReferences = false;  // 🔥 참고문헌 파싱 종료
       currentSub = line.slice(4).trim();
     } else if (line.startsWith('![')) {
       const match = line.match(/!\[(.*?)\]\((.*?)\)/);
