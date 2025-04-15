@@ -514,10 +514,7 @@ h2 {
   flex-direction: column;
   align-items: center;
 }
-.section-image {
-  width: 100%;
-  border-radius: 8px;
-}
+
 .image-caption {
   font-size: 0.9rem;
   color: #555;
