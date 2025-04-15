@@ -226,17 +226,22 @@ const createImageBlock = (src = '', caption = '') => {
   // ✅ 기존 이미지들 불러오기
   images.forEach(({ caption, src }) => imgContainer.appendChild(createImageBlock(src, caption)));
 
-  // ✅ 🔥 이미지 업로드 → base64 → 삽입
-  const fileInput = block.querySelector('.image-upload');
-  fileInput.addEventListener('change', async () => {
-    const files = Array.from(fileInput.files);
-    for (const file of files) {
-      const base64 = await toBase64(file);
-      const imageBlock = createImageBlock(base64);
+const fileInput = block.querySelector('.image-upload');
+fileInput.addEventListener('change', async () => {
+  const files = Array.from(fileInput.files);
+  for (const file of files) {
+    try {
+      const url = await uploadImageToServer(file);  // ✅ 서버 업로드
+      const imageBlock = createImageBlock(url);     // ✅ URL 기반으로 추가
       imgContainer.appendChild(imageBlock);
+    } catch (err) {
+      alert("❌ 이미지 업로드 실패");
+      console.error(err);
     }
-    fileInput.value = '';
-  });
+  }
+  fileInput.value = '';
+});
+
 
   return block;
 };
