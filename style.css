@@ -424,7 +424,10 @@ h2 {
   border-radius: 6px;
   border: 1px solid #bbb;
   background: #fff;
-  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;  /* ✅ 추가 */
+  font-size: 16px;                   /* ✅ 변경 */
+  line-height: 1.6;                  /* ✅ 추가 */
+  white-space: pre-wrap;            /* ✅ 줄바꿈 유지 */
 }
 
 /* 이미지 클릭 시 보여줄 라이트박스 */
