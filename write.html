@@ -455,54 +455,65 @@ console.log("[DEBUG] Markdown content generated:");
       return markdown.trim();
     }
 
-    document.getElementById('documentForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const title = document.getElementById('doc-title').value.trim();
-      const koreanName = document.getElementById('korean-name').value.trim();
-      const scientificName = document.getElementById('scientific-name').value.trim();
-      const englishName = document.getElementById('english-name').value.trim();
-      const order = document.getElementById('order').value.trim();
-      const family = document.getElementById('family').value.trim();
-      const genus = document.getElementById('genus').value.trim();
-      const coverImage = document.getElementById('cover-image').getAttribute('data-url') || null;
+document.getElementById('documentForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const title = document.getElementById('doc-title').value.trim();
+  const koreanName = document.getElementById('korean-name').value.trim();
+  const scientificName = document.getElementById('scientific-name').value.trim();
+  const englishName = document.getElementById('english-name').value.trim();
+  const order = document.getElementById('order').value.trim();
+  const family = document.getElementById('family').value.trim();
+  const genus = document.getElementById('genus').value.trim();
 
-      const content = generateMarkdownContent();
+  // ✅ 대표 이미지 업로드 처리
+  const coverFile = document.getElementById('cover-image').files[0];
+  let coverImage = null;
+  if (coverFile) {
+    try {
+      coverImage = await uploadImageToServer(coverFile);
+    } catch (err) {
+      alert("❌ 대표 이미지 업로드 실패");
+      console.error(err);
+      return;
+    }
+  }
 
-      const payload = {
-        title,
-        content,
-        koreanName,
-        scientificName,
-        englishName,
-        order,
-        family,
-        genus,
-        coverImage
-      };
+  const content = generateMarkdownContent();
 
-      const url = isEdit 
-  ? '/api/update' 
-  : '/api/create';
-      try {
-const res = await fetch(`https://birdwiki.onrender.com${url}`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(payload),
-  credentials: 'include'  // 🔥 이 줄을 꼭 추가!
+  const payload = {
+    title,
+    content,
+    koreanName,
+    scientificName,
+    englishName,
+    order,
+    family,
+    genus,
+    coverImage,
+  };
+
+  const url = isEdit ? '/api/update' : '/api/create';
+  try {
+    const res = await fetch(`https://birdwiki.onrender.com${url}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      credentials: 'include',
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      alert("✅ 저장 성공!");
+      window.location.href = `read.html?title=${encodeURIComponent(title)}`;
+    } else {
+      alert(`❌ 저장 실패: ${result.error}`);
+    }
+  } catch (err) {
+    alert("❌ 서버 오류 발생");
+    console.error(err);
+  }
 });
 
-        const result = await res.json();
-        if (res.ok) {
-          alert("✅ 저장 성공!");
-          window.location.href = `read.html?title=${encodeURIComponent(title)}`;
-        } else {
-          alert(`❌ 저장 실패: ${result.error}`);
-        }
-      } catch (err) {
-        alert("❌ 서버 오류 발생");
-        console.error(err);
-      }
-    });
 
     loadDocumentIfEditing();
   </script>
