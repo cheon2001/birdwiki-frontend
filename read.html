@@ -101,122 +101,125 @@ fetch('header.html')
     const params = new URLSearchParams(window.location.search);
     const title = params.get('title');
 
-    function renderContent(text) {
-      let parsingReferenceBlock = false;
-let referenceBuffer = [];
-      const lines = text.split('\n');
-      const container = document.getElementById('doc-content');
-      container.innerHTML = '';
-     let currentSection = container;
-      let imageContainer = null;
+function renderContent(text) {
+  let parsingReferenceBlock = false;
+  let referenceBuffer = [];
+  const lines = text.split('\n');
+  const container = document.getElementById('doc-content');
+  container.innerHTML = '';
+  let currentSection = container;
 
-lines.forEach(line => {
-  if (line.startsWith('📚 참고문헌:')) {
-    parsingReferenceBlock = true;
-    referenceBuffer = [line.replace('📚 참고문헌:', '').trim()];
-  } else if (parsingReferenceBlock) {
-    if (line.startsWith('## ') || line.startsWith('### ') || line.startsWith('![')) {
-      // 참고문헌 블록 종료 처리
-      const ref = document.createElement('div');
-      ref.className = 'section-ref';
-      ref.innerHTML = `<strong>참고문헌:</strong><br>${referenceBuffer.join('<br>')}`;
-      currentSection.appendChild(ref);
-      parsingReferenceBlock = false;
+  // ✅ 이미지 묶음 컨테이너를 하나만 유지
+  let imageContainer = null;
 
-      // 다음 줄 처리 계속
-      if (line.startsWith('## ') || line.startsWith('### ')) {
-        const tag = line.startsWith('## ') ? 'h2' : 'h3';
-        const h = document.createElement(tag);
-        h.textContent = line.replace(/^#+ /, '');
-        h.className = tag === 'h3' ? 'subheading-title' : '';
-        container.appendChild(h);
-        currentSection = container;
-} else if (line.startsWith('![')) {
-  const altMatch = line.match(/!\[(.*?)\]\((.*?)\)/);
-  if (altMatch) {
-    const [_, alt, src] = altMatch;
+  lines.forEach(line => {
+    if (line.startsWith('📚 참고문헌:')) {
+      parsingReferenceBlock = true;
+      referenceBuffer = [line.replace('📚 참고문헌:', '').trim()];
+    } else if (parsingReferenceBlock) {
+      if (line.startsWith('## ') || line.startsWith('### ') || line.startsWith('![')) {
+        const ref = document.createElement('div');
+        ref.className = 'section-ref';
+        ref.innerHTML = `<strong>참고문헌:</strong><br>${referenceBuffer.join('<br>')}`;
+        currentSection.appendChild(ref);
+        parsingReferenceBlock = false;
 
-    // ✅ 항상 새로 생성
-    const imageContainer = document.createElement('div');
-    imageContainer.className = 'section-inline-images';
-    currentSection.appendChild(imageContainer);
+        // 다음 줄 처리 계속
+        if (line.startsWith('## ') || line.startsWith('### ')) {
+          const tag = line.startsWith('## ') ? 'h2' : 'h3';
+          const h = document.createElement(tag);
+          h.textContent = line.replace(/^#+ /, '');
+          h.className = tag === 'h3' ? 'subheading-title' : '';
+          container.appendChild(h);
+          currentSection = container;
+        } else if (line.startsWith('![')) {
+          // 이미지 처리 아래와 동일
+          const altMatch = line.match(/!\[(.*?)\]\((.*?)\)/);
+          if (altMatch) {
+            const [_, alt, src] = altMatch;
 
-    const block = document.createElement('div');
-    block.className = 'image-block';
+            if (!imageContainer) {
+              imageContainer = document.createElement('div');
+              imageContainer.className = 'section-inline-images';
+              currentSection.appendChild(imageContainer);
+            }
 
-    const img = document.createElement('img');
-    img.src = src;
-    img.alt = alt;
-    img.className = 'section-image';
+            const block = document.createElement('div');
+            block.className = 'image-block';
 
-    const caption = document.createElement('p');
-    caption.textContent = alt;
-    caption.className = 'image-caption';
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = alt;
+            img.className = 'section-image';
 
-    block.appendChild(img);
-    block.appendChild(caption);
-    imageContainer.appendChild(block);
-  }
-}
+            const caption = document.createElement('p');
+            caption.textContent = alt;
+            caption.className = 'image-caption';
 
+            block.appendChild(img);
+            block.appendChild(caption);
+            imageContainer.appendChild(block);
+          }
+        }
+      } else {
+        referenceBuffer.push(line.trim());
+      }
+    } else if (line.startsWith('## ') || line.startsWith('### ')) {
+      const tag = line.startsWith('## ') ? 'h2' : 'h3';
+      const h = document.createElement(tag);
+      h.textContent = line.replace(/^#+ /, '');
+      h.className = tag === 'h3' ? 'subheading-title' : '';
+      container.appendChild(h);
+      currentSection = container;
 
+      // ✅ 이미지 컨테이너도 리셋 (섹션마다 새 그룹이 되게 하고 싶다면 이 줄 살려도 됨)
+      imageContainer = null;
+    } else if (line.startsWith('![')) {
+      const altMatch = line.match(/!\[(.*?)\]\((.*?)\)/);
+      if (altMatch) {
+        const [_, alt, src] = altMatch;
+
+        if (!imageContainer) {
+          imageContainer = document.createElement('div');
+          imageContainer.className = 'section-inline-images';
+          currentSection.appendChild(imageContainer);
+        }
+
+        const block = document.createElement('div');
+        block.className = 'image-block';
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = alt;
+        img.className = 'section-image';
+
+        const caption = document.createElement('p');
+        caption.textContent = alt;
+        caption.className = 'image-caption';
+
+        block.appendChild(img);
+        block.appendChild(caption);
+        imageContainer.appendChild(block);
+      }
     } else {
-      referenceBuffer.push(line.trim());
+      if (line.trim() !== '') {
+        const p = document.createElement('p');
+        p.textContent = line;
+        if (!currentSection) currentSection = container;
+        currentSection.appendChild(p);
+      }
     }
-  } else if (line.startsWith('## ') || line.startsWith('### ')) {
-    const tag = line.startsWith('## ') ? 'h2' : 'h3';
-    const h = document.createElement(tag);
-    h.textContent = line.replace(/^#+ /, '');
-    h.className = tag === 'h3' ? 'subheading-title' : '';
-    container.appendChild(h);
-    currentSection = container;
-} else if (line.startsWith('![')) {
-  const altMatch = line.match(/!\[(.*?)\]\((.*?)\)/);
-  if (altMatch) {
-    const [_, alt, src] = altMatch;
+  });
 
-    // ✅ 항상 새로 생성
-    const imageContainer = document.createElement('div');
-    imageContainer.className = 'section-inline-images';
-    currentSection.appendChild(imageContainer);
-
-    const block = document.createElement('div');
-    block.className = 'image-block';
-
-    const img = document.createElement('img');
-    img.src = src;
-    img.alt = alt;
-    img.className = 'section-image';
-
-    const caption = document.createElement('p');
-    caption.textContent = alt;
-    caption.className = 'image-caption';
-
-    block.appendChild(img);
-    block.appendChild(caption);
-    imageContainer.appendChild(block);
-  }
-}
-
-  
-  else {
-    // ✅ 일반 텍스트 본문 처리
-    if (line.trim() !== '') {
-      const p = document.createElement('p');
-      p.textContent = line;
-      if (!currentSection) currentSection = container;
-      currentSection.appendChild(p);
-    }
-  }
-});
-        // ✅ 마지막 줄이 참고문헌으로 끝났을 경우 대비한 flush
+  // 마지막 참고문헌 처리
   if (parsingReferenceBlock && referenceBuffer.length > 0) {
     const ref = document.createElement('div');
     ref.className = 'section-ref';
     ref.innerHTML = `<strong>참고문헌:</strong><br>${referenceBuffer.join('<br>')}`;
     currentSection.appendChild(ref);
   }
-    }
+}
+
 
     if (!title) {
       document.getElementById('doc-title').textContent = '❌ 제목이 제공되지 않았습니다.';
