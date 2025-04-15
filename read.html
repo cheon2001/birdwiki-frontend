@@ -109,54 +109,93 @@ let referenceBuffer = [];
      let currentSection = container;
       let imageContainer = null;
 
-      lines.forEach(line => {
-if (line.startsWith('📚 참고문헌:')) {
-  parsingReferenceBlock = true;
-  referenceBuffer = [line.replace('📚 참고문헌:', '').trim()];
-} else if (parsingReferenceBlock) {
-  if (line.startsWith('## ') || line.startsWith('### ') || line.startsWith('![')) {
-    // 📚 참고문헌 블록 끝남 → 렌더링하고 다음 줄 처리
-    const ref = document.createElement('div');
-    ref.className = 'section-ref';
-    ref.innerHTML = `<strong>참고문헌:</strong><br>${referenceBuffer.join('<br>')}`;
-    currentSection.appendChild(ref);
-    parsingReferenceBlock = false;
+lines.forEach(line => {
+  if (line.startsWith('📚 참고문헌:')) {
+    parsingReferenceBlock = true;
+    referenceBuffer = [line.replace('📚 참고문헌:', '').trim()];
+  } else if (parsingReferenceBlock) {
+    if (line.startsWith('## ') || line.startsWith('### ') || line.startsWith('![')) {
+      // 참고문헌 블록 종료 처리
+      const ref = document.createElement('div');
+      ref.className = 'section-ref';
+      ref.innerHTML = `<strong>참고문헌:</strong><br>${referenceBuffer.join('<br>')}`;
+      currentSection.appendChild(ref);
+      parsingReferenceBlock = false;
 
-    // 다음 줄을 정상적으로 처리하기 위해 다시 루프 진입
-    if (line.startsWith('## ') || line.startsWith('### ')) {
-      const tag = line.startsWith('## ') ? 'h2' : 'h3';
-      const h = document.createElement(tag);
-      h.textContent = line.replace(/^#+ /, '');
-      h.className = tag === 'h3' ? 'subheading-title' : '';
-      container.appendChild(h);
-      currentSection = container;
-    } else if (line.startsWith('![')) {
-      const altMatch = line.match(/!\[(.*?)\]\((.*?)\)/);
-      if (altMatch) {
-        const [_, alt, src] = altMatch;
-        if (!imageContainer) {
-          imageContainer = document.createElement('div');
-          imageContainer.className = 'section-inline-images';
-          currentSection.appendChild(imageContainer);
+      // 다음 줄 처리 계속
+      if (line.startsWith('## ') || line.startsWith('### ')) {
+        const tag = line.startsWith('## ') ? 'h2' : 'h3';
+        const h = document.createElement(tag);
+        h.textContent = line.replace(/^#+ /, '');
+        h.className = tag === 'h3' ? 'subheading-title' : '';
+        container.appendChild(h);
+        currentSection = container;
+      } else if (line.startsWith('![')) {
+        const altMatch = line.match(/!\[(.*?)\]\((.*?)\)/);
+        if (altMatch) {
+          const [_, alt, src] = altMatch;
+          if (!imageContainer) {
+            imageContainer = document.createElement('div');
+            imageContainer.className = 'section-inline-images';
+            currentSection.appendChild(imageContainer);
+          }
+          const block = document.createElement('div');
+          block.className = 'image-block';
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = alt;
+          img.className = 'section-image';
+          const caption = document.createElement('p');
+          caption.textContent = alt;
+          caption.className = 'image-caption';
+          block.appendChild(img);
+          block.appendChild(caption);
+          imageContainer.appendChild(block);
         }
-        const block = document.createElement('div');
-        block.className = 'image-block';
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = alt;
-        img.className = 'section-image';
-        const caption = document.createElement('p');
-        caption.textContent = alt;
-        caption.className = 'image-caption';
-        block.appendChild(img);
-        block.appendChild(caption);
-        imageContainer.appendChild(block);
       }
+    } else {
+      referenceBuffer.push(line.trim());
+    }
+  } else if (line.startsWith('## ') || line.startsWith('### ')) {
+    const tag = line.startsWith('## ') ? 'h2' : 'h3';
+    const h = document.createElement(tag);
+    h.textContent = line.replace(/^#+ /, '');
+    h.className = tag === 'h3' ? 'subheading-title' : '';
+    container.appendChild(h);
+    currentSection = container;
+  } else if (line.startsWith('![')) {
+    const altMatch = line.match(/!\[(.*?)\]\((.*?)\)/);
+    if (altMatch) {
+      const [_, alt, src] = altMatch;
+      if (!imageContainer) {
+        imageContainer = document.createElement('div');
+        imageContainer.className = 'section-inline-images';
+        currentSection.appendChild(imageContainer);
+      }
+      const block = document.createElement('div');
+      block.className = 'image-block';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = alt;
+      img.className = 'section-image';
+      const caption = document.createElement('p');
+      caption.textContent = alt;
+      caption.className = 'image-caption';
+      block.appendChild(img);
+      block.appendChild(caption);
+      imageContainer.appendChild(block);
     }
   } else {
-    referenceBuffer.push(line.trim());
+    // ✅ 일반 텍스트 본문 처리
+    if (line.trim() !== '') {
+      const p = document.createElement('p');
+      p.textContent = line;
+      if (!currentSection) currentSection = container;
+      currentSection.appendChild(p);
+    }
   }
-}
+});
+
 });
 
         // ✅ 마지막 줄이 참고문헌으로 끝났을 경우 대비한 flush
