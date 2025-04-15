@@ -26,6 +26,7 @@
   </div>
 
   <main class="article-page">
+    <h2 id="doc-title"></h2>
     <article class="article-content">
       <div id="doc-content">로딩 중...</div>
     </article>
@@ -105,8 +106,7 @@ let referenceBuffer = [];
       const lines = text.split('\n');
       const container = document.getElementById('doc-content');
       container.innerHTML = '';
-
-      let currentSection = null;
+     let currentSection = container;
       let imageContainer = null;
 
       lines.forEach(line => {
