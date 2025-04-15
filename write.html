@@ -415,12 +415,14 @@ const createSection = (
 if (references) markdown += `📚 참고문헌: ${references}\n`;
 
 
-        const images = section.querySelectorAll('.section-inline-images .inline-image');
-        images.forEach(imgInput => {
-const base64 = imgInput.getAttribute('data-url');
-          const caption = imgInput.nextElementSibling.value.trim();
-          if (base64) markdown += `![${caption}](${base64})\n`;
-        });
+const images = section.querySelectorAll('.section-inline-images .image-block');
+images.forEach(block => {
+  const img = block.querySelector('img');
+  const caption = block.querySelector('.inline-caption')?.value.trim() || '';
+  if (img?.src) {
+    markdown += `![${caption}](${img.src})\n`;
+  }
+});
 
         const subs = section.querySelectorAll('.sub-block');
         subs.forEach(sub => {
@@ -429,12 +431,14 @@ const base64 = imgInput.getAttribute('data-url');
           markdown += `### ${subTitle}\n`;
           if (subText) markdown += `${subText}\n`;
 
-          const subImages = sub.querySelectorAll('.sub-images .inline-image');
-          subImages.forEach(imgInput => {
-            const base64 = imgInput.getAttribute('data-url');
-            const caption = imgInput.nextElementSibling.value.trim();
-            if (base64) markdown += `![${caption}](${base64})\n`;
-          });
+         const subImages = sub.querySelectorAll('.sub-images .image-block');
+subImages.forEach(block => {
+  const img = block.querySelector('img');
+  const caption = block.querySelector('.inline-caption')?.value.trim() || '';
+  if (img?.src) {
+    markdown += `![${caption}](${img.src})\n`;
+  }
+});
         });
       });
 
