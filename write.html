@@ -429,7 +429,8 @@ const base64 = imgInput.getAttribute('data-url');
       const order = document.getElementById('order').value.trim();
       const family = document.getElementById('family').value.trim();
       const genus = document.getElementById('genus').value.trim();
-      const coverImage = document.getElementById('cover-base64').value || null;
+      const coverImage = document.getElementById('cover-image').getAttribute('data-url') || null;
+
       const content = generateMarkdownContent();
 
       const payload = {
