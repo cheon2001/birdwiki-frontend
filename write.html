@@ -71,6 +71,22 @@
   </main>
 
   <script>
+    // 🔥 이 부분을 제일 위로 올려서 전역에 정의해줘
+async function uploadImageToServer(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await fetch("https://birdwiki.onrender.com/api/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error("이미지 업로드 실패");
+
+  const data = await res.json();
+  return data.imageUrl;
+}
+
     fetch('header.html')
       .then(res => res.text())
       .then(html => {
