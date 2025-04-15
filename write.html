@@ -500,7 +500,10 @@ document.getElementById('documentForm').addEventListener('submit', async (e) => 
     coverImage,
   };
 
-  const url = isEdit ? '/api/update' : '/api/create';
+  const url = isEdit 
+    ? `/api/update?title=${encodeURIComponent(titleParam)}` // 🔥 기존 제목을 쿼리로 함께 보냄
+    : '/api/create';
+
   try {
     const res = await fetch(`https://birdwiki.onrender.com${url}`, {
       method: 'POST',
