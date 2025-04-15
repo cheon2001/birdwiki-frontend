@@ -421,11 +421,12 @@ if (references) markdown += `📚 참고문헌: ${references}\n`;
   ? '/api/update' 
   : '/api/create';
       try {
-        const res = await fetch(`https://birdwiki.onrender.com${url}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+const res = await fetch(`https://birdwiki.onrender.com${url}`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+  credentials: 'include'  // 🔥 이 줄을 꼭 추가!
+});
 
         const result = await res.json();
         if (res.ok) {
