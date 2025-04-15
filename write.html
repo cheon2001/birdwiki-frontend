@@ -84,8 +84,12 @@ async function uploadImageToServer(file) {
   if (!res.ok) throw new Error("이미지 업로드 실패");
 
   const data = await res.json();
-  return data.imageUrl;
+
+  // ✅ 상대 경로면 절대 URL로 보정
+  const url = data.imageUrl;
+  return url.startsWith('http') ? url : `https://birdwiki.onrender.com${url}`;
 }
+
 
     fetch('header.html')
       .then(res => res.text())
@@ -308,15 +312,19 @@ const createSection = (
         document.getElementById('family').value = data.family || '';
         document.getElementById('genus').value = data.genus || '';
 
-        if (data.coverImage) {
-          const img = document.createElement('img');
-          img.src = data.coverImage;
-          img.style.maxWidth = '200px';
-          const cover = document.getElementById('cover-image');
-          cover.setAttribute('data-url', data.coverImage);
-          cover.insertAdjacentElement('beforebegin', img);
-          document.getElementById('cover-base64').value = data.coverImage;
-        }
+if (data.coverImage) {
+  const img = document.createElement('img');
+  const fullUrl = data.coverImage.startsWith('http')
+    ? data.coverImage
+    : `https://birdwiki.onrender.com${data.coverImage}`; // ✅ URL 보정
+  img.src = fullUrl;
+  img.style.maxWidth = '200px';
+  const cover = document.getElementById('cover-image');
+  cover.setAttribute('data-url', fullUrl);  // ✅ 이 data-url도 절대 경로로
+  cover.insertAdjacentElement('beforebegin', img);
+  document.getElementById('cover-base64').value = fullUrl;
+}
+
 
         if (data.content) parseAndInjectContent(data.content);
       } catch (err) {
