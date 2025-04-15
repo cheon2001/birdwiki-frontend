@@ -288,7 +288,7 @@ const createSection = (
           img.src = data.coverImage;
           img.style.maxWidth = '200px';
           const cover = document.getElementById('cover-image');
-          cover.setAttribute('data-base64', data.coverImage);
+          cover.setAttribute('data-url', data.coverImage);
           cover.insertAdjacentElement('beforebegin', img);
           document.getElementById('cover-base64').value = data.coverImage;
         }
