@@ -665,6 +665,12 @@ figcaption {
   display: none;
 }
 
+
+/* ✅ PC에서는 숨김 (중복 제거) */
+.mobile-overlay-title {
+  display: none;
+}
+
 /* ✅ 기존에 중복된 걸 하나로 정리 */
 @media (max-width: 768px) {
   .overlay {
@@ -688,7 +694,3 @@ figcaption {
   }
 }
 
-/* ✅ PC에서는 숨김 (중복 제거) */
-.mobile-overlay-title {
-  display: none;
-}
