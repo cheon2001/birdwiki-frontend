@@ -6,40 +6,44 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .about-hero {
-      position: relative;
-      width: 100%;
+      display: flex;
       height: 75vh;
+      width: 100%;
       overflow: hidden;
     }
 
-    .about-hero img {
+    .about-hero .image-side {
+      width: 50%;
+      height: 100%;
+    }
+
+    .about-hero .image-side img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: brightness(0.7);
     }
 
-    .about-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
+    .about-hero .text-side {
+      width: 50%;
+      background: rgba(0, 0, 0, 0.6);
       color: white;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 40px 60px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      text-align: center;
     }
 
-    .about-overlay h1 {
+    .about-hero .text-side h1 {
       font-size: 38px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
-    .about-overlay p {
+    .about-hero .text-side p {
       font-size: 18px;
-      line-height: 1.6;
+      line-height: 1.7;
+      max-width: 80%;
     }
 
     .about-content {
@@ -51,16 +55,40 @@
       line-height: 1.8;
       font-family: 'Inter', sans-serif;
     }
+
+    @media (max-width: 768px) {
+      .about-hero {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .about-hero .image-side,
+      .about-hero .text-side {
+        width: 100%;
+        height: 50vh;
+      }
+
+      .about-hero .text-side {
+        padding: 24px;
+      }
+
+      .about-hero .text-side p {
+        font-size: 16px;
+        max-width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
   <div id="header-container"></div>
 
   <div class="about-hero">
-    <img src="assets/images/IMG_7218.jpg" alt="조류 사진" />
-    <div class="about-overlay">
+    <div class="image-side">
+      <img src="assets/images/IMG_7218.jpg" alt="꿩 이미지" />
+    </div>
+    <div class="text-side">
       <h1>Birdwiki 소개</h1>
-      <p>여기에 너가 직접 작성할 인상적인 소개 멘트가 들어갈 공간이야.<br>한두 문장으로 철학이나 핵심 방향성을 강조해줘도 좋고, 사명처럼 써도 좋아.</p>
+      <p>여기에 네가 작성할 강렬한 한두 문장의 멘트를 넣어. 철학, 미션, 핵심 방향성 모두 좋아.</p>
     </div>
   </div>
 
@@ -79,3 +107,4 @@
   </script>
 </body>
 </html>
+
