@@ -602,7 +602,7 @@ figcaption {
 .hero {
   position: relative;
   height: 100vh;
-  background-image: url('assets/images/ChineseSparrowhawk_main.jpg');
+  background-image: url('assets/images/mainimg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
