@@ -666,3 +666,18 @@ figcaption {
     display: none;
   }
 }
+  .mobile-overlay-title {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    font-weight: 600;
+    z-index: 10;
+  }
+}
