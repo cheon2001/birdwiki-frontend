@@ -20,16 +20,16 @@
 }
 
 
-    .about-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 48px;
-      font-weight: 700;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); /* ✅ 자연스러운 가독성 */
-    }
+.about-text {
+  position: absolute;
+  top: 32px;  /* ✅ 상단에서 32px 떨어짐 */
+  left: 50%;  /* ✅ 가운데 정렬 */
+  transform: translateX(-50%);
+  color: white;
+  font-size: 36px;
+  font-weight: 700;
+  z-index: 2;
+}
 
     .about-content {
       max-width: 1000px;
