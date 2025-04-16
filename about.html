@@ -5,19 +5,20 @@
   <title>Birdwiki : About</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .about-hero {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9; /* ✅ 16:9 고정 */
-      overflow: hidden;
-    }
+.about-hero {
+  position: relative;
+  width: 100%;
+  height: 65vh; /* ✅ 뷰포트의 65% 정도 높이만 사용 */
+  overflow: hidden;
+}
 
-    .about-hero img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+.about-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* ✅ 잘릴 수 있지만 비율 유지 */
+  object-position: center center;
+}
+
 
     .about-text {
       position: absolute;
@@ -44,10 +45,11 @@
 <body>
   <div id="header-container"></div>
 
-  <div class="about-hero">
-    <img src="assets/images/IMG_7218.jpg" alt="꿩 이미지" />
-    <div class="about-text">About Us</div>
-  </div>
+<div class="about-hero">
+  <img src="assets/images/IMG_7218.jpg" alt="꿩 이미지" />
+  <div class="about-text">About Us</div>
+</div>
+
 
   <main class="about-content">
     <p><strong>Birdwiki</strong>는 대한민국의 조류 생태와 분류 정보를 누구나 쉽게 접하고 공유할 수 있도록 만든 웹 기반 조류 백과입니다.</p>
