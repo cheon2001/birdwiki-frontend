@@ -87,7 +87,7 @@
   .hero {
     position: relative;
     height: 100vh; /* ✅ 완전한 화면 높이 */
-    background-image: url('assets/images/ChineseSparrowhawk_main.jpg');
+    background-image: url('assets/images/mainimg.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
