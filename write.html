@@ -477,17 +477,20 @@ const coverInput = document.getElementById('cover-image');
 const coverFile = coverInput.files[0];
 let coverImage = null;
 
+// 이미지가 없더라도 data-url이 있는지 먼저 확인
 if (coverFile) {
   try {
     coverImage = await uploadImageToServer(coverFile);
+    document.getElementById('cover-image').setAttribute('data-url', coverImage);  // 추가
   } catch (err) {
     alert("❌ 대표 이미지 업로드 실패");
     console.error(err);
     return;
   }
 } else {
-  coverImage = coverInput.getAttribute('data-url') || null;
+  coverImage = document.getElementById('cover-image').getAttribute('data-url') || null;
 }
+
 
 
   const content = generateMarkdownContent();
