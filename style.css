@@ -447,7 +447,9 @@ h2 {
 .top-search {
   max-width: 300px;
   position: relative;
-  margin-left: 40px;  /* 로고와 너무 붙지 않게 */
+  margin-left: 40px;  /* 필요하면 조절 */
+  display: flex;      /* ✅ 검색창 보이게 */
+  align-items: center;
 }
 
 .top-search input {
@@ -457,6 +459,7 @@ h2 {
   border-radius: 6px;
   border: 1px solid #ccc;
   outline: none;
+  min-width: 120px;
 }
 
 .top-search input:focus {
@@ -563,19 +566,6 @@ figcaption {
   .logo {
     display: none; /* ✅ 텍스트 로고는 모바일에서 숨김 */
   }
-
-.top-search.mobile-only {
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-  margin: 0 10px;
-}
-
-.top-search.mobile-only input:focus {
-  width: 100%;
-  max-width: 160px;
-}
-
   .hamburger {
     width: 28px;
     height: 24px;
