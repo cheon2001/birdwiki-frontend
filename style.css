@@ -613,3 +613,31 @@ figcaption {
     grid-template-columns: 1fr;
   }
 }
+
+/* 데스크탑 전용 요소 */
+.desktop-only {
+  display: block;
+}
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: block !important;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .top-search.mobile-only input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+}
