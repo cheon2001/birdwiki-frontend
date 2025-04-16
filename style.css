@@ -598,3 +598,30 @@ figcaption {
     padding: 6px 10px;
   }
 }
+
+.recent-docs {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+.recent-docs h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #0077cc;
+  padding-bottom: 6px;
+}
+.recent-list {
+  list-style: none;
+  padding: 0;
+}
+.recent-list li {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+.recent-list li a {
+  color: #0077cc;
+  text-decoration: none;
+}
+.recent-list li a:hover {
+  text-decoration: underline;
+}
