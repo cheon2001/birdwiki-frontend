@@ -21,8 +21,9 @@
 
 .about-text {
   position: absolute;
-  top: 40px;
-  left: 60px;
+  top: 50%;         /* 수직 중앙 */
+  left: 25%;        /* 전체 폭의 1/4 지점 */
+  transform: translate(-50%, -50%); /* 정확한 중심 정렬 */
   z-index: 2;
 }
 
@@ -32,6 +33,7 @@
   font-weight: 700;
   margin: 0;
 }
+
 
     .about-content {
       max-width: 1000px;
