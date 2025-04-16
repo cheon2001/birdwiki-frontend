@@ -74,7 +74,29 @@
       }
     });
   </script>
-  
+  <script>
+  async function loadRecentDocuments() {
+    try {
+      const res = await fetch("https://birdwiki.onrender.com/api/recent");
+      const docs = await res.json();
+      const list = document.getElementById("recent-list");
+
+      docs.forEach(doc => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = `read.html?title=${encodeURIComponent(doc.title)}`;
+        a.textContent = doc.title;
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+    } catch (err) {
+      console.error("❌ 최근 문서 불러오기 실패:", err);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", loadRecentDocuments);
+</script>
+
       
 </body>
 </html>
