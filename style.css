@@ -620,26 +620,25 @@ figcaption {
   max-width: 500px;
 }
 
-/* ✅ 새로 추가되는 오른쪽 오버레이 박스 */
 .recent-box {
   position: absolute;
   right: 60px;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.88);
+  background-color: rgba(0, 0, 0, 0.3); /* ✅ 검정 반투명으로 통일 */
   padding: 24px;
   border-radius: 12px;
   max-width: 280px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  color: #222;
+  color: white; /* ✅ 흰 글자 */
 }
 
 .recent-box h3 {
   font-size: 18px;
   margin-bottom: 12px;
-  border-bottom: 2px solid #0077cc;
   padding-bottom: 6px;
-  color: #0077cc;
+  border-bottom: 2px solid white; /* ✅ 흰색 줄 */
+  color: white; /* ✅ 흰색 글자 */
 }
 
 .recent-list {
@@ -654,10 +653,11 @@ figcaption {
 }
 
 .recent-list li a {
-  color: #0077cc;
+  color: white;
   text-decoration: none;
 }
 
 .recent-list li a:hover {
   text-decoration: underline;
 }
+
