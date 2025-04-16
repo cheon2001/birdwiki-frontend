@@ -521,3 +521,27 @@ h2 {
   margin-top: 0.4rem;
   text-align: center;
 }
+
+figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+figcaption {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 14px;
+  color: #444;
+  word-break: keep-all; /* ← 한글 단어 쪼개짐 방지 */
+  white-space: normal;   /* ← 줄바꿈 허용 */
+  max-width: 100%;
+}
+
