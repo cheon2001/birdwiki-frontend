@@ -1,23 +1,73 @@
-<!-- about.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Birdwiki: Birds of the South Korea</title>
+  <title>Birdwiki 소개</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .about-hero {
+      position: relative;
+      width: 100%;
+      height: 75vh;
+      overflow: hidden;
+    }
+
+    .about-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7);
+    }
+
+    .about-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: white;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 40px 60px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .about-overlay h1 {
+      font-size: 38px;
+      margin-bottom: 16px;
+    }
+
+    .about-overlay p {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .about-content {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 0 32px;
+      font-size: 17px;
+      color: #333;
+      line-height: 1.8;
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
 </head>
 <body>
   <div id="header-container"></div>
 
-  <main class="article-page">
-    <h1>Birdwiki 소개</h1>
-    <p style="font-size: 18px; margin-top: 20px;">
-      <strong>Birdwiki</strong>는 대한민국의 조류 생태와 분류를 알리기 위해 제작된 웹 백과입니다.<br />
-      사용자들이 자유롭게 문서를 생성하고, 정보를 공유하며, 조류에 대한 지식을 축적해가는 것을 목표로 하고 있습니다.
-    </p>
-    <p style="font-size: 16px; margin-top: 10px;">
-      모든 데이터는 오픈된 출처와 사용자 기여를 기반으로 하며, 과학적 근거와 생태적 정보를 중시합니다.
-    </p>
+  <div class="about-hero">
+    <img src="assets/images/IMG_7218.jpg" alt="조류 사진" />
+    <div class="about-overlay">
+      <h1>Birdwiki 소개</h1>
+      <p>여기에 너가 직접 작성할 인상적인 소개 멘트가 들어갈 공간이야.<br>한두 문장으로 철학이나 핵심 방향성을 강조해줘도 좋고, 사명처럼 써도 좋아.</p>
+    </div>
+  </div>
+
+  <main class="about-content">
+    <p><strong>Birdwiki</strong>는 대한민국의 조류 생태와 분류 정보를 누구나 쉽게 접하고 공유할 수 있도록 만든 웹 기반 조류 백과입니다.</p>
+    <p>전문가뿐 아니라 일반 사용자들도 참여하여 조류 생태에 대한 지식을 축적할 수 있으며, 과학적 근거와 열린 기여 문화를 지향합니다. 모든 정보는 신뢰할 수 있는 출처와 사용자들의 협업을 기반으로 지속적으로 갱신됩니다.</p>
+    <p>Birdwiki는 단순한 정보 제공을 넘어, 사람과 자연이 연결되는 지식의 거점이 되기를 바랍니다.</p>
   </main>
 
   <script>
