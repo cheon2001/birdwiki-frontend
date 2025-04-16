@@ -2,10 +2,14 @@
 <header class="top-bar">
   <a href="index.html" class="logo-group">
     <img src="assets/icons/Birdwiki_icon.png" alt="Birdwiki Logo" class="logo-icon" />
-    <!-- ✅ 데스크탑에서만 보이게 -->
     <div class="logo desktop-only"><strong>Birdwiki</strong> : Birds of South Korea</div>
   </a>
 
+  <!-- ✅ 검색창을 nav-menu 밖으로 위치 이동 -->
+  <div class="top-search always-visible">
+    <input type="text" id="searchInput" placeholder="🔍 검색어를 입력하세요" autocomplete="off" />
+    <ul id="suggestions" class="suggestion-list"></ul>
+  </div>
 
   <button id="hamburger" class="hamburger" aria-label="메뉴 열기">
     <span></span><span></span><span></span>
@@ -16,18 +20,10 @@
     <a href="discussion.html" class="nav-link">토론장</a>
     <a href="board.html" class="nav-link">게시판</a>
     <a href="write.html" class="nav-link important">문서 만들기</a>
-
-<!-- ✅ 데스크탑에서만 보이는 검색창 -->
-<!-- class="top-search desktop-only" → class="top-search always-visible" 으로 수정 -->
-<div class="top-search always-visible">
-  <input type="text" id="searchInput" placeholder="🔍 검색어를 입력하세요" autocomplete="off" />
-  <ul id="suggestions" class="suggestion-list"></ul>
-</div>
-
-
     <img src="assets/icons/User_icon.png" alt="User" class="user-icon" />
   </nav>
 </header>
+
 
 
 <style>
