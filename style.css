@@ -661,3 +661,8 @@ figcaption {
   text-decoration: underline;
 }
 
+@media (max-width: 768px) {
+  .hero .search-box {
+    display: none;
+  }
+}
