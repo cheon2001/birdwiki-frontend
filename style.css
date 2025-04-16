@@ -662,7 +662,7 @@ figcaption {
 }
 
 @media (max-width: 768px) {
-  .hero .search-box {
+  .hero .overlay {
     display: none;
   }
 }
