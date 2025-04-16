@@ -4,11 +4,13 @@
     <img src="assets/icons/Birdwiki_icon.png" alt="Birdwiki Logo" class="logo-icon" />
     <div class="logo"><strong>Birdwiki</strong> : Birds of South Korea</div>
   </a>
-  <nav class="nav-menu">
-<a href="about.html" class="nav-link">Birdwiki</a>
-<a href="discussion.html" class="nav-link">토론장</a>
-<a href="board.html" class="nav-link">게시판</a>
-
+  <button id="hamburger" class="hamburger" aria-label="메뉴 열기">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="nav-menu" id="navMenu">
+    <a href="about.html" class="nav-link">Birdwiki</a>
+    <a href="discussion.html" class="nav-link">토론장</a>
+    <a href="board.html" class="nav-link">게시판</a>
     <a href="write.html" class="nav-link important">문서 만들기</a>
     <div class="top-search">
       <input type="text" id="searchInput" placeholder="🔍 검색어를 입력하세요" autocomplete="off" />
@@ -17,3 +19,48 @@
     <img src="assets/icons/User_icon.png" alt="User" class="user-icon" />
   </nav>
 </header>
+
+<style>
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    border-radius: 2px;
+  }
+  @media (max-width: 768px) {
+    .nav-menu {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      background-color: white;
+      margin-top: 10px;
+      border-top: 1px solid #eee;
+    }
+    .nav-menu.open {
+      display: flex;
+    }
+    .hamburger {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+
+    hamburger.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
+    });
+  });
+</script>
