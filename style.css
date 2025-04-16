@@ -661,11 +661,15 @@ figcaption {
   text-decoration: underline;
 }
 
+.mobile-overlay-title {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .hero .overlay {
     display: none;
   }
-}
+
   .mobile-overlay-title {
     position: absolute;
     top: 10px;
@@ -681,3 +685,4 @@ figcaption {
     z-index: 10;
   }
 }
+
