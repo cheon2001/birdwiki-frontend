@@ -84,7 +84,6 @@ async function uploadImageToServer(file) {
   if (!res.ok) throw new Error("이미지 업로드 실패");
 
   const data = await res.json();
-
   // ✅ 상대 경로면 절대 URL로 보정
   const url = data.imageUrl;
   return url.startsWith('http') ? url : `https://birdwiki.onrender.com${url}`;
@@ -474,17 +473,22 @@ document.getElementById('documentForm').addEventListener('submit', async (e) => 
   const genus = document.getElementById('genus').value.trim();
 
   // ✅ 대표 이미지 업로드 처리
-  const coverFile = document.getElementById('cover-image').files[0];
-  let coverImage = null;
-  if (coverFile) {
-    try {
-      coverImage = await uploadImageToServer(coverFile);
-    } catch (err) {
-      alert("❌ 대표 이미지 업로드 실패");
-      console.error(err);
-      return;
-    }
+const coverInput = document.getElementById('cover-image');
+const coverFile = coverInput.files[0];
+let coverImage = null;
+
+if (coverFile) {
+  try {
+    coverImage = await uploadImageToServer(coverFile);
+  } catch (err) {
+    alert("❌ 대표 이미지 업로드 실패");
+    console.error(err);
+    return;
   }
+} else {
+  coverImage = coverInput.getAttribute('data-url') || null;
+}
+
 
   const content = generateMarkdownContent();
 
