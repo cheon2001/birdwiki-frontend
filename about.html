@@ -8,27 +8,35 @@
 .about-hero {
   position: relative;
   width: 100%;
-  height: 65vh; /* ✅ 뷰포트의 65% 정도 높이만 사용 */
+  height: 65vh;
   overflow: hidden;
 }
 
 .about-hero img {
   width: 100%;
   height: 100%;
-  object-fit: cover;  /* ✅ 잘릴 수 있지만 비율 유지 */
+  object-fit: cover;
   object-position: center center;
 }
 
-
+/* 텍스트 + 배경 */
 .about-text {
   position: absolute;
-  top: 32px;  /* ✅ 상단에서 32px 떨어짐 */
-  left: 50%;  /* ✅ 가운데 정렬 */
+  top: 32px;
+  left: 50%;
   transform: translateX(-50%);
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.6); /* ✅ 반투명 배경 */
+  padding: 12px 24px;
+  border-radius: 8px;
+}
+
+/* 텍스트 자체 스타일 */
+.about-text span {
   color: white;
   font-size: 36px;
   font-weight: 700;
-  z-index: 2;
+  white-space: nowrap;
 }
 
     .about-content {
@@ -47,8 +55,11 @@
 
 <div class="about-hero">
   <img src="assets/images/IMG_7218.jpg" alt="꿩 이미지" />
-  <div class="about-text">About Us</div>
+  <div class="about-text">
+    <span>About Us</span>
+  </div>
 </div>
+
 
 
   <main class="about-content">
