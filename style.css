@@ -686,10 +686,10 @@ figcaption {
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
-    padding: 10px 40px;   /* ↑ 양옆 여백 크게 */
+    padding: 10px 90px;   /* ↑ 양옆 여백 크게 */
     border-radius: 10px;
-    font-size: 1.3rem;     /* ↑ 글자 크기 증가 */
-    letter-spacing: 4px;   /* ↑ 자간 증가 */
+    font-size: 1.6rem;     /* ↑ 글자 크기 증가 */
+    letter-spacing: 2px;   /* ↑ 자간 증가 */
     font-weight: 700;
     z-index: 10;
   }
