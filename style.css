@@ -686,12 +686,14 @@ figcaption {
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
-    padding: 10px 90px;   /* ↑ 양옆 여백 크게 */
+
+    padding: 8px 24px;         /* ✅ 좌우 여백 줄임 */
     border-radius: 10px;
-    font-size: 1.6rem;     /* ↑ 글자 크기 증가 */
-    letter-spacing: 2px;   /* ↑ 자간 증가 */
+
+    font-size: 1.5rem;         /* ✅ 글자 크기 유지 or 약간 줄여도 됨 */
+    letter-spacing: 3px;       /* ✅ 자간 살짝만 */
     font-weight: 700;
+    white-space: nowrap;       /* ✅ 줄바꿈 방지 핵심 */
     z-index: 10;
   }
 }
-
