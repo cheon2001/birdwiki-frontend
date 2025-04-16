@@ -2,48 +2,37 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Birdwiki : Birds of the South Korea</title>
+  <title>Birdwiki : About</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     .about-hero {
-      display: flex;
-      height: 75vh;
+      position: relative;
       width: 100%;
+      height: 75vh;
       overflow: hidden;
     }
 
-    .about-hero .image-side {
-      width: 60%;
-      height: 100%;
-    }
-
-    .about-hero .image-side img {
+    .about-hero img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
-    .about-hero .text-side {
-      width: 40%;
-      background-color: black; /* ✅ 완전한 검정 배경 */
-      color: white;             /* ✅ 흰색 텍스트 */
+    .about-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* ✅ 반투명 검정 배경 */
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 40px;
-      text-align: center;
-    }
-
-    .about-hero .text-side h1 {
-      font-size: 38px;
-      margin-bottom: 20px;
-    }
-
-    .about-hero .text-side p {
-      font-size: 18px;
-      line-height: 1.7;
-      max-width: 80%;
+      color: white;
+      font-size: 48px;
+      font-weight: bold;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     }
 
     .about-content {
@@ -55,41 +44,14 @@
       line-height: 1.8;
       font-family: 'Inter', sans-serif;
     }
-
-    @media (max-width: 768px) {
-      .about-hero {
-        flex-direction: column;
-        height: auto;
-      }
-
-      .about-hero .image-side,
-      .about-hero .text-side {
-        width: 100%;
-        height: 50vh;
-      }
-
-      .about-hero .text-side {
-        padding: 24px;
-      }
-
-      .about-hero .text-side p {
-        font-size: 16px;
-        max-width: 100%;
-      }
-    }
   </style>
 </head>
 <body>
   <div id="header-container"></div>
 
   <div class="about-hero">
-    <div class="image-side">
-      <img src="assets/images/IMG_7218.jpg" alt="꿩 이미지" />
-    </div>
-    <div class="text-side">
-      <h1>Birdwiki : Birds of the South Korea</h1>
-      <p>대한민국 조류학의 대중화에 기여하고<br>건강한 탐조 문화를 전파하세요.</p>
-    </div>
+    <img src="assets/images/IMG_7218.jpg" alt="꿩 이미지" />
+    <div class="about-overlay">About Us</div>
   </div>
 
   <main class="about-content">
