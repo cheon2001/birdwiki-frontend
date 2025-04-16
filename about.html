@@ -19,24 +19,18 @@
   object-position: center center;
 }
 
-/* 텍스트 + 배경 */
 .about-text {
   position: absolute;
-  top: 32px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 40px;
+  left: 60px;
   z-index: 2;
-  background-color: rgba(0, 0, 0, 0.6); /* ✅ 반투명 배경 */
-  padding: 12px 24px;
-  border-radius: 8px;
 }
 
-/* 텍스트 자체 스타일 */
-.about-text span {
+.about-text h1 {
   color: white;
-  font-size: 50px;
+  font-size: 40px;
   font-weight: 700;
-  white-space: nowrap;
+  margin: 0;
 }
 
     .about-content {
@@ -56,9 +50,10 @@
 <div class="about-hero">
   <img src="assets/images/IMG_7218.jpg" alt="꿩 이미지" />
   <div class="about-text">
-    <span>About Us</span>
+    <h1>About Us</h1>
   </div>
 </div>
+
 
 
 
