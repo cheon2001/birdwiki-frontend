@@ -545,3 +545,71 @@ figcaption {
   max-width: 100%;
 }
 
+@media (max-width: 768px) {
+  /* 헤더 고정 위치 및 패딩 조절 */
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    padding: 10px 20px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .nav-menu {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .hero {
+    height: auto;
+    padding: 40px 20px;
+    background-position: center top;
+  }
+
+  .overlay {
+    padding: 20px;
+    border-radius: 0;
+    text-align: center;
+  }
+
+  .overlay h1 {
+    font-size: 28px;
+    line-height: 1.4;
+  }
+
+  .overlay .sub {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .search-box {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .search-box input {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .article-content h1 {
+    font-size: 28px;
+  }
+
+  .article-content h2 {
+    font-size: 20px;
+  }
+
+  .image-block {
+    width: 100% !important;
+  }
+
+  .section-inline-images {
+    grid-template-columns: 1fr;
+  }
+}
