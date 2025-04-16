@@ -229,7 +229,7 @@ body {
   font-family: 'Inter', sans-serif;
   background-color: #f5f5f5;   /* ✅ 삭제 or transparent */
   color: #222;
-  padding-top: 100px;          /* ✅ index.html에선 삭제 */
+  padding-top: 0px;          /* ✅ index.html에선 삭제 */
 }
 /* ✅ 이걸 하나만 남겨라 */
 .section-image {
