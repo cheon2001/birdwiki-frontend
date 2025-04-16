@@ -70,3 +70,23 @@
     });
   });
 </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    const navLinks = navMenu.querySelectorAll('.nav-link');
+
+    // 햄버거 클릭 시 메뉴 열기/닫기
+    hamburger.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
+    });
+
+    // 메뉴 항목 클릭 시 메뉴 닫기
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+      });
+    });
+  });
+</script>
