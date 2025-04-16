@@ -5,34 +5,32 @@
   <title>Birdwiki : About</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-.about-hero {
-  position: relative;
+.hero-image img {
   width: 100%;
-  height: 65vh;
-  overflow: hidden;
-}
-
-.about-hero img {
-  width: 100%;
-  height: 100%;
+  height: auto;
+  display: block;
   object-fit: cover;
-  object-position: center center;
+  aspect-ratio: 16 / 9;
 }
 
-.about-text {
-  position: absolute;
-  top: 50%;         /* 수직 중앙 */
-  left: 25%;        /* 전체 폭의 1/4 지점 */
-  transform: translate(-50%, -50%); /* 정확한 중심 정렬 */
-  z-index: 2;
+.about-content {
+  background: white;
+  padding: 60px 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+  color: #222;
 }
 
-.about-text h1 {
-  color: white;
-  font-size: 40px;
+.about-heading {
+  font-size: 42px;
   font-weight: 700;
-  margin: 0;
+  margin-bottom: 40px;
+  color: #000;
+  border-bottom: 3px solid #0077cc;
+  padding-bottom: 10px;
 }
+
 
 
     .about-content {
@@ -49,17 +47,15 @@
 <body>
   <div id="header-container"></div>
 
-<div class="about-hero">
-  <img src="assets/images/IMG_7218.jpg" alt="꿩 이미지" />
-  <div class="about-text">
-    <h1>About Us</h1>
-  </div>
+<div class="hero-image">
+  <img src="assets/images/IMG_7218.jpg" alt="꿩 이미지">
 </div>
 
 
 
 
   <main class="about-content">
+      <h1 class="about-heading">About Us</h1>
     <p><strong>Birdwiki</strong>는 대한민국의 조류 생태와 분류 정보를 누구나 쉽게 접하고 공유할 수 있도록 만든 웹 기반 조류 백과입니다.</p>
     <p>전문가뿐 아니라 일반 사용자들도 참여하여 조류 생태에 대한 지식을 축적할 수 있으며, 과학적 근거와 열린 기여 문화를 지향합니다. 모든 정보는 신뢰할 수 있는 출처와 사용자들의 협업을 기반으로 지속적으로 갱신됩니다.</p>
     <p>Birdwiki는 단순한 정보 제공을 넘어, 사람과 자연이 연결되는 지식의 거점이 되기를 바랍니다.</p>
